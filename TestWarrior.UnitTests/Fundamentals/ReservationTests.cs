@@ -1,13 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using TestWarrior.Fundamentals;
 
 namespace TestWarrior.UnitTests
 {
-    [TestClass]
+    [TestFixture]
     //NameOfTheClassWeTest+Tests
     public class ReservationTests
     {
-        [TestMethod]
+        [Test]
         //NameOfTheMethodWeTest_Scenario_ExpectedBehavior()
         public void CanBeCancelledBy_AdminCancelling_ReturnTrue()
         {
@@ -21,7 +21,7 @@ namespace TestWarrior.UnitTests
             Assert.IsTrue(result);
         }
 
-        [TestMethod]
+        [Test]
         public void CanBeCancelledBy_SameUserCancelling_ReturnTrue()
         {
             // Arrange
@@ -32,10 +32,10 @@ namespace TestWarrior.UnitTests
             var result = reservation.CanBeCancelledBy(user);
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
-        [TestMethod]
+        [Test]
         public void CanBeCancelledBy_AnotherUserCancelling_ReturnFalse()
         {
             // Arrange
@@ -45,7 +45,7 @@ namespace TestWarrior.UnitTests
             var result = reservation.CanBeCancelledBy(new User());
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.That(result == false);
         }
     }
 }
