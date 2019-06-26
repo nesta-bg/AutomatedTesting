@@ -15,5 +15,18 @@ namespace TestWarrior.UnitTests.Fundamentals
 
             Assert.That(logger.LastError, Is.EqualTo("a"));
         }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void Log_InvalidError_ThrowArgumentNullException(string error)
+        {
+            var logger = new ErrorLogger();
+
+            //writing assertions by using a delegate
+            Assert.That(() => logger.Log(error), Throws.ArgumentNullException);
+            //Assert.That(() => logger.Log(error), Throws.Exception.TypeOf<DivideByZeroException>);
+        }
     }
 }
