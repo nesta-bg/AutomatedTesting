@@ -3,7 +3,7 @@ using TestWarrior.Fundamentals;
 
 namespace TestWarrior.UnitTests.Fundamentals
 {
-    [TestFixture] 
+    [TestFixture]
     public class MathTests
     {
         private Math _math;
@@ -65,6 +65,47 @@ namespace TestWarrior.UnitTests.Fundamentals
             var result = _math.Max(a, b);
 
             Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void GetOddNumbers_LimitIsGreaterThanZiro_ReturnOddNumbersUpToLimit()
+        {
+            var result = _math.GetOddNumbers(5);
+
+            // We tend to write balanced tests(not too general, not too specific). 
+
+            // Most General
+            //Assert.That(result, Is.Not.Empty);
+
+            // More specific
+            //Assert.That(result.Count(), Is.EqualTo(3));
+
+            // Most specific 
+            //Assert.That(result, Does.Contain(1));
+            //Assert.That(result, Does.Contain(3));
+            //Assert.That(result, Does.Contain(5));
+
+            Assert.That(result, Is.EquivalentTo(new[] { 1, 3, 5 })); //It doesn't care about the order.
+
+            //Another usefull assertions
+            //Assert.That(result, Is.Ordered);
+            //Assert.That(result, Is.Unique);
+        }
+
+        [Test]
+        public void GetOddNumbers_LimitIsZiro_ReturnOddNumbersUpToLimit()
+        {
+            var result = _math.GetOddNumbers(0);
+
+            Assert.That(result, Is.Empty);
+        }
+
+        [Test]
+        public void GetOddNumbers_LimitIsLessThanZiro_ReturnOddNumbersUpToLimit()
+        {
+            var result = _math.GetOddNumbers(-5);
+
+            Assert.That(result, Is.Empty);
         }
     }
 }
