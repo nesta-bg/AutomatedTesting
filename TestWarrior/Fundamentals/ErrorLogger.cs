@@ -20,6 +20,15 @@ namespace TestWarrior.Fundamentals
             // ...
 
             ErrorLogged?.Invoke(this, Guid.NewGuid());
+            //OnErrorLogged(Guid.NewGuid());
         }
+
+        //Don't test private or protected methods.
+        //They represent implementation details.
+
+        //protected virtual void OnErrorLogged(Guid errorId)
+        //{
+        //    ErrorLogged?.Invoke(this, errorId);
+        //}
     }
 }
