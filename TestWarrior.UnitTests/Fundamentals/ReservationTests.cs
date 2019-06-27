@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using TestWarrior.Fundamentals;
 
-namespace TestWarrior.UnitTests
+namespace TestWarrior.UnitTests.Fundamentals
 {
     [TestFixture]
     //NameOfTheClassWeTest+Tests

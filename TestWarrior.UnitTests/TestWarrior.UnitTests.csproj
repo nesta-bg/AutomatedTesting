@@ -53,6 +53,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fundamentals\DemeritPointsCalculatorTests.cs" />
     <Compile Include="Fundamentals\CustomerControllerTests.cs" />
     <Compile Include="Fundamentals\ErrorLoggerTests.cs" />
     <Compile Include="Fundamentals\FizzBuzzTests.cs" />
