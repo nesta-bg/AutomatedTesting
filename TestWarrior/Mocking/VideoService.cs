@@ -8,6 +8,13 @@ namespace TestWarrior.Mocking
 {
     public class VideoService
     {
+        //pros(for all dependency injection variants): 
+        //(VideoService class becomes loosely coupled and testable)
+        //in production code we can pass a real FileReader object to ReadVideoTitle method (TestWarrior.Program) 
+        //whereas in test we can pass fake FileReader object (TestWarrior.UnitTests.Mocking.VideoServiceTests)
+        //cons:
+        //changing the signature of this method(especially if we have this method on many places)
+        //some di frameworks cannot inject dependencies via method parameters
         public string ReadVideoTitle(IFileReader fileReader)
         {
             var str = fileReader.Read("video.txt");
