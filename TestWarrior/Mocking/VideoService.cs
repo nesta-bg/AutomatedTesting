@@ -2,16 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
 
 namespace TestWarrior.Mocking
 {
     public class VideoService
     {
+        //Refactoring Towards a Loosely-coupled Design:
+        //1. move all the code that touches an external resource in separate class (in this case FileReader)
+        //and isolate it from the rest of the code 
+        //2. extract an interface from the FileReader class (IFileReader)
+        //3. create another implementation of this interface (FakeFileReader)
         public string ReadVideoTitle()
         {
-            var str = File.ReadAllText("video.txt");
+            var str = new FileReader().Read("video.txt");
             var video = JsonConvert.DeserializeObject<Video>(str);
             if (video == null)
                 return "Error parsing the video.";
