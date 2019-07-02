@@ -12,6 +12,8 @@ namespace TestWarrior.Mocking
                 return string.Empty;
 
             var unitOfWork = new UnitOfWork();
+
+            // Integration tests
             var bookings =
                 unitOfWork.Query<Booking>()
                     .Where(
