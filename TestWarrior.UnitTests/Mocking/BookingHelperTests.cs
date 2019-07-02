@@ -74,25 +74,54 @@ namespace TestWarrior.UnitTests.Mocking
         [Test]
         public void BookingStartsAndFinishesInTheMiddleOfAnExistingBooking_ReturnExistingBookingReference()
         {
+            var result = BookingHelper.OverlappingBookingsExist(new Booking
+            {
+                Id = 1,
+                ArrivalDate = After(_existingBooking.ArrivalDate),
+                DepartureDate = Before(_existingBooking.DepartureDate)
+            }, _repository.Object);
 
+            Assert.That(result, Is.EqualTo(_existingBooking.Reference));
         }
 
         [Test]
         public void BookingStartsInTheMiddleOfAnExistingBookingButFinishesAfter_ReturnExistingBookingReference()
         {
+            var result = BookingHelper.OverlappingBookingsExist(new Booking
+            {
+                Id = 1,
+                ArrivalDate = After(_existingBooking.ArrivalDate),
+                DepartureDate = After(_existingBooking.DepartureDate)
+            }, _repository.Object);
 
+            Assert.That(result, Is.EqualTo(_existingBooking.Reference));
         }
 
         [Test]
         public void BookingStartsAndFinishesAfterAnExistingBooking_ReturnEmptyString()
         {
+            var result = BookingHelper.OverlappingBookingsExist(new Booking
+            {
+                Id = 1,
+                ArrivalDate = After(_existingBooking.DepartureDate),
+                DepartureDate = After(_existingBooking.DepartureDate, days: 2)
+            }, _repository.Object);
 
+            Assert.That(result, Is.Empty);
         }
 
         [Test]
         public void BookingOverlapButNewBookingIsCanceled_ReturnEmptyString()
         {
+            var result = BookingHelper.OverlappingBookingsExist(new Booking
+            {
+                Id = 1,
+                ArrivalDate = After(_existingBooking.ArrivalDate),
+                DepartureDate = After(_existingBooking.DepartureDate),
+                Status = "Cancelled"
+            }, _repository.Object);
 
+            Assert.That(result, Is.Empty);
         }
 
         private DateTime Before(DateTime dateTime, int days = 1)
