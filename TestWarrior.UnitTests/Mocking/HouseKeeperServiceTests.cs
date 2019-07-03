@@ -47,5 +47,18 @@ namespace TestWarrior.UnitTests.Mocking
             _statementGenerator.Verify(sg =>
                 sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)));
         }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase(" ")]
+        [TestCase("")]
+        public void SendStatementEmails_HouseKeepersEmailIsNullOrWhiteSpaceOrEmpty_ShouldNotGenerateStatements(string email)
+        {
+            _houseKeeper.Email = email;
+
+            _service.SendStatementEmails(_statementDate);
+            _statementGenerator.Verify(sg =>
+                sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)), Times.Never);
+        }
     }
 }
