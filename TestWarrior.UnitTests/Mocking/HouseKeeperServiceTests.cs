@@ -106,6 +106,21 @@ namespace TestWarrior.UnitTests.Mocking
             VerifyEmailNotSent();
         }
 
+        [Test]
+        public void SendStatementEmails_EmailSendingFails_DisplayAMessageBox()
+        {
+            _emailSender.Setup(es => es.EmailFile(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>()
+            )).Throws<Exception>();
+
+            _service.SendStatementEmails(_statementDate);
+
+            VerifyMessageBoxDisplayed();
+        }
+
         private void VerifyEmailNotSent()
         {
             _emailSender.Verify(es => es.EmailFile(
@@ -123,6 +138,14 @@ namespace TestWarrior.UnitTests.Mocking
                 _houseKeeper.StatementEmailBody,
                 _statementFileName,
                 It.IsAny<string>()));
+        }
+
+        private void VerifyMessageBoxDisplayed()
+        {
+            _messageBox.Verify(mb => mb.Show(
+                It.IsAny<string>(), 
+                It.IsAny<string>(), 
+                MessageBoxButtons.OK));
         }
     }
 }
