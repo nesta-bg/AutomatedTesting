@@ -16,7 +16,7 @@ namespace TestWarrior.UnitTests.Mocking
         private Mock<IXtraMessageBox> _messageBox;
         private DateTime _statementDate = new DateTime(2019, 1, 1);
         private Housekeeper _houseKeeper;
-        private readonly string _statementFileName = "fileName";
+        private string _statementFileName;
 
         [SetUp]
         public void SetUp()
@@ -29,7 +29,12 @@ namespace TestWarrior.UnitTests.Mocking
                 _houseKeeper
             }.AsQueryable());
 
+            _statementFileName = "fileName";
             _statementGenerator = new Mock<IStatementGenerator>();
+            _statementGenerator
+                .Setup(sg => sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)))
+                .Returns(() =>_statementFileName);
+
             _emailSender = new Mock<IEmailSender>();
             _messageBox = new Mock<IXtraMessageBox>();
 
@@ -66,45 +71,43 @@ namespace TestWarrior.UnitTests.Mocking
         [Test]
         public void SendStatementEmails_WhenCalled_EmailTheStatement()
         {
-            _statementGenerator
-                .Setup(sg => sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)))
-                .Returns(_statementFileName);
-
             _service.SendStatementEmails(_statementDate);
 
-            _emailSender.Verify(es => es.EmailFile(
-                _houseKeeper.Email,
-                _houseKeeper.StatementEmailBody,
-                _statementFileName,
-                It.IsAny<string>()));
+            VerifyEmailSent();
         }
 
         [Test]
         public void SendStatementEmails_StatementFileNameIsNull_ShouldNotEmailTheStatement()
         {
-            _statementGenerator
-                .Setup(sg => sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)))
-                .Returns(() => null);
+            _statementFileName = null;
 
             _service.SendStatementEmails(_statementDate);
 
-            _emailSender.Verify(es => es.EmailFile(
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()),
-                Times.Never);
+            VerifyEmailNotSent();
         }
 
         [Test]
         public void SendStatementEmails_StatementFileNameIsEmptyString_ShouldNotEmailTheStatement()
         {
-            _statementGenerator
-               .Setup(sg => sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)))
-               .Returns("");
+            _statementFileName = "";
 
             _service.SendStatementEmails(_statementDate);
 
+            VerifyEmailNotSent();
+        }
+
+        [Test]
+        public void SendStatementEmails_StatementFileNameIsWhitespace_ShouldNotEmailTheStatement()
+        {
+            _statementFileName = " ";
+
+            _service.SendStatementEmails(_statementDate);
+
+            VerifyEmailNotSent();
+        }
+
+        private void VerifyEmailNotSent()
+        {
             _emailSender.Verify(es => es.EmailFile(
                 It.IsAny<string>(),
                 It.IsAny<string>(),
@@ -113,21 +116,13 @@ namespace TestWarrior.UnitTests.Mocking
                 Times.Never);
         }
 
-        [Test]
-        public void SendStatementEmails_StatementFileNameIsWhitespace_ShouldNotEmailTheStatement()
+        private void VerifyEmailSent()
         {
-            _statementGenerator
-               .Setup(sg => sg.SaveStatement(_houseKeeper.Oid, _houseKeeper.FullName, (_statementDate)))
-               .Returns(" ");
-
-            _service.SendStatementEmails(_statementDate);
-
             _emailSender.Verify(es => es.EmailFile(
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()),
-                Times.Never);
+                _houseKeeper.Email,
+                _houseKeeper.StatementEmailBody,
+                _statementFileName,
+                It.IsAny<string>()));
         }
     }
 }
